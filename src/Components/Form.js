@@ -1,31 +1,24 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class Form extends Component {
-    state = {
-        NewValue: ""
-    }
+function Form ({addUser}) {
+    const [NewValue, setNewValue] = useState("");
 
-    onAddUser = (event) => {
+    const onAddUser = (event) => {
         event.preventDefault();
-        const NewValue = this.state.NewValue;
         if (NewValue.trim() != "") {
-            this.props.addUser(NewValue);
-            this.setState({NewValue: ""});
+            addUser(NewValue);
+            setNewValue("");
         }
     }
 
-    onValueChange = (event) => {
-        this.setState({NewValue: event.target.value});
-    }
+    const onValueChange = (event) => setNewValue(event.target.value);
 
-    render () {
-        return(
-            <form onSubmit={this.onAddUser}>
-                <input type="text" onChange={this.onValueChange} value={this.state.NewValue}/>
-                <button type="submit">Add User</button>
-            </form>
-        );
-    }
+    return(
+        <form onSubmit={onAddUser}>
+            <input type="text" onChange={onValueChange} value={NewValue}/>
+            <button type="submit">Add User</button>
+        </form>
+    );
 }
 
 export default Form;

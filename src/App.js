@@ -1,61 +1,58 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import UserInfo from './Components/UserInfo.js';
 import Form from './Components/Form.js';
+import axios from 'axios';
 
-class App extends Component {
-  state = {
-    NewUser: "",
-    Users: [
-      {id: 1, username: "Mohammed"},
-      {id: 2, username: "Eslam"},
-      {id: 3, username: "Tahboub"}
-    ]
-  }
+function App () {
+  const [Users, setUsers] = useState([]);
+  const [Loading, setLoading] = useState(true);
 
-  addUser = (NewValue) => {
-    const Users = this.state.Users;
-    Users.push({id: Math.random() * 100, username: NewValue});
-    this.setState({Users});
-  }
+  useEffect(() => {
+    axios.get("https://jsonplaceholder.typicode.com/users").then(Response => {
+      setUsers(Response.data);
+      setLoading(false);
+    });
+  }, []);
 
-  onDeleteUser = (Id) => {
-    this.state.Users.map((User, Index) => {
+  const addUser = NewValue => setUsers([...Users, {id: Math.random() * 100, username: NewValue}]);
+
+  const onDeleteUser = Id => {
+    Users.map((User, Index) => {
       if (User.id == Id) {
-        const Users = this.state.Users;
-        Users.splice(Index, 1);
-        this.setState({Users});
+        const newUsers = [...Users];
+        newUsers.splice(Index, 1);
+        setUsers(newUsers);
       }
     });
   }
 
-  editUser = (NewValue, Id) => {
-    this.state.Users.map((User, Index) => {
+  const editUser = (NewValue, Id) => {
+    Users.map((User, Index) => {
       if (User.id == Id) {
-        const Users = this.state.Users;
-        Users[Index].username = NewValue;
-        this.setState({Users});
+        const newUsers = [...Users];
+        newUsers[Index].username = NewValue;
+        setUsers(newUsers);
       }
     });
   }
 
-  render () {
-      var Users;
-    if (this.state.Users.length > 0) {
-      Users = this.state.Users.map((user, index) => {
-        return <UserInfo key={user.id} editUser={this.editUser} onDeleteUser={this.onDeleteUser} user={user} />
-      });
-    } else {
-      Users = "No User Yet";
-    }
-    return(
-      <div className="App">
-        <h3>Users List</h3>
-        <Form addUser={this.addUser} />
-        {Users}
-      </div>
-    );
-  }
+  return(
+    <div className="App">
+      <h3>Users List</h3>
+      <Form addUser={addUser} />
+      { Loading?
+          "Loading..."
+          :
+          Users.length > 0? 
+            Users.map((user, index) => {
+              return <UserInfo key={user.id} editUser={editUser} onDeleteUser={onDeleteUser} user={user} />
+            })
+            :
+            "No User Yet"
+      }
+    </div>
+  );
 }
 
 export default App;

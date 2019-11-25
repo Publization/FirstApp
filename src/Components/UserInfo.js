@@ -1,45 +1,36 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class UserInfo extends Component {
-    state = {
-        Edit: false,
-        NewValue: this.props.user.username
-    }
+function UserInfo ({editUser, onDeleteUser, user}) {
+    const [Edit, setEdit] = useState(false);
+    const [NewValue, setNewValue] = useState(user.username);
 
-    onUserChange = (event) => {
-        this.setState({NewValue: event.target.value});
-    }
+    const onUserChange = (event) => setNewValue(event.target.value);
 
-    onToggleEdit = () => {
-        this.setState({Edit: !this.state.Edit});
-    }
+    const onToggleEdit = () => setEdit(!Edit);
 
-    onUserEdit = (event) => {
+    const onUserEdit = (event) => {
         event.preventDefault();
-        const NewValue = this.state.NewValue;
         if (NewValue.trim() != "") {
-            this.props.editUser(NewValue, this.props.user.id);
-            this.onToggleEdit();
+            editUser(NewValue, user.id);
+            onToggleEdit();
         }
     }
 
-    render () {
-        if (this.state.Edit)
-            return(
-                <form onSubmit={this.onUserEdit}>
-                    <input type="text" onChange={this.onUserChange} defaultValue={this.props.user.username} />
-                    <input type="submit" value="Update" />
-                </form>
-            );
-        else
-            return(
-                <div>
-                    <span>{this.props.user.username}</span>
-                    <button onClick={this.onToggleEdit}>Edit</button>
-                    <button onClick={() => {this.props.onDeleteUser(this.props.user.id)}}>Delete</button>
-                </div>
-            );
-    }
+    if (Edit)
+        return(
+            <form onSubmit={onUserEdit}>
+                <input type="text" onChange={onUserChange} defaultValue={user.username} />
+                <input type="submit" value="Update" />
+            </form>
+        );
+    else
+        return(
+            <div>
+                <span>{user.username}</span>
+                <button onClick={onToggleEdit}>Edit</button>
+                <button onClick={() => {onDeleteUser(user.id)}}>Delete</button>
+            </div>
+        );
 }
 
 export default UserInfo;
