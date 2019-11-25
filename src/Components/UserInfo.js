@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function UserInfo ({editUser, onDeleteUser, user}) {
     const [Edit, setEdit] = useState(false);
@@ -16,19 +16,23 @@ function UserInfo ({editUser, onDeleteUser, user}) {
         }
     }
 
+    useEffect(() => {
+        if (Edit) document.getElementById(user.id).children[0].focus();
+    }, [Edit]);
+
     if (Edit)
         return(
-            <form onSubmit={onUserEdit}>
+            <form onSubmit={onUserEdit} className="User" id={user.id}>
                 <input type="text" onChange={onUserChange} defaultValue={user.username} />
-                <input type="submit" value="Update" />
+                <button className="UserButton" type="submit">Save</button>
             </form>
         );
     else
         return(
-            <div>
+            <div className="User">
                 <span>{user.username}</span>
-                <button onClick={onToggleEdit}>Edit</button>
-                <button onClick={() => {onDeleteUser(user.id)}}>Delete</button>
+                <button className="UserButton" onClick={onToggleEdit}>Edit</button>
+                <button className="UserButton NegativeBtn" onClick={() => {onDeleteUser(user.id)}}>Delete</button>
             </div>
         );
 }

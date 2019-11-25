@@ -39,18 +39,20 @@ function App () {
 
   return(
     <div className="App">
-      <h3>Users List</h3>
+      <h3 style={{margin: "0px", color: "#444", padding: "14px", backgroundImage: "linear-gradient(90deg, #ececec, #fff)"}}>Users List</h3>
       <Form addUser={addUser} />
+      <div className="Users">
       { Loading?
           "Loading..."
           :
-          Users.length > 0? 
+          Users.length > 0?
             Users.map((user, index) => {
               return <UserInfo key={user.id} editUser={editUser} onDeleteUser={onDeleteUser} user={user} />
             })
             :
             "No User Yet"
       }
+      </div>
     </div>
   );
 }
